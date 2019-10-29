@@ -31,7 +31,8 @@
         "symfony/web-link": "4.3.*",
         "symfony/webpack-encore-bundle": "^1.6",
         "symfony/yaml": "4.3.*",
-        "thecodingmachine/safe": "^0.1.15"
+        "thecodingmachine/safe": "^0.1.15",
+        "tweedegolf/prometheus-bundle": "^0.3.0"
     },
     "require-dev": {
         "doctrine/coding-standard": "^6.0",

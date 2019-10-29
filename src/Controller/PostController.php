@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\Post;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -40,8 +41,9 @@ final class PostController extends AbstractController
      * @Rest\Post("/posts", name="createPost")
      * @IsGranted("ROLE_FOO")
      */
-    public function createAction(Request $request): JsonResponse
+    public function createAction(Request $request, LoggerInterface $logger): JsonResponse
     {
+        $logger->info('Call to post controller create action');
         $message = $request->request->get('message');
         if (empty($message)) {
             throw new BadRequestHttpException('message cannot be empty');
@@ -58,8 +60,9 @@ final class PostController extends AbstractController
     /**
      * @Rest\Get("/posts", name="findAllPosts")
      */
-    public function findAllAction(): JsonResponse
+    public function findAllAction(LoggerInterface $logger): JsonResponse
     {
+        $logger->info('Call to post controller create findAll action');
         $posts = $this->em->getRepository(Post::class)->findBy([], ['id' => 'DESC']);
         $data = $this->serializer->serialize($posts, JsonEncoder::FORMAT);
 

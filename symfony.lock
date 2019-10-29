@@ -640,6 +640,12 @@
     "thecodingmachine/safe": {
         "version": "v0.1.15"
     },
+    "tweedegolf/prometheus-bundle": {
+        "version": "v0.3.0"
+    },
+    "tweedegolf/prometheus-client": {
+        "version": "v0.3.0"
+    },
     "twig/twig": {
         "version": "v2.11.2"
     },

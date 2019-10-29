@@ -1,14 +1,9 @@
 doctrine:
     dbal:
         # configure these for your database server
-        driver: 'pdo_mysql'
-        server_version: '5.7'
-        charset: utf8mb4
-        default_table_options:
-            charset: utf8mb4
-            collate: utf8mb4_unicode_ci
-
+        driver: 'pdo_pgsql'
         url: '%env(resolve:DATABASE_URL)%'
+        server_version: '11'
         schema_filter: ~^(?!sessions)~
     orm:
         auto_generate_proxy_classes: true

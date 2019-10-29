@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\User;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -29,8 +30,9 @@ final class SecurityController extends AbstractController
     /**
      * @Route("/security/login", name="login")
      */
-    public function loginAction(): JsonResponse
+    public function loginAction(LoggerInterface $logger): JsonResponse
     {
+        $logger->info('Call to security controller create login action');
         /** @var User $user */
         $user = $this->getUser();
         $userClone = clone $user;
@@ -45,8 +47,9 @@ final class SecurityController extends AbstractController
      *
      * @Route("/security/logout", name="logout")
      */
-    public function logoutAction(): void
+    public function logoutAction(LoggerInterface $logger): void
     {
+        $logger->info('Call to security controller create logout action');
         throw new RuntimeException('This should not be reached!');
     }
 }
