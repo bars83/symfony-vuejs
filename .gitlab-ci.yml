@@ -47,7 +47,6 @@ vendors:
     DATABASE_URL: 'pgsql://test:test@db:5432/test'
   before_script:
     - mkdir -p $(pwd)/.composer-cache
-    - ls -la /var/www/
     - composer config -g cache-dir "$(pwd)/.composer-cache"
   cache:
     key: "${CI_COMMIT_REF_SLUG}-vendor"
@@ -60,7 +59,6 @@ vendors:
       - var
     expire_in: 1 hour
   script:
-    - ls -la
     - composer install --verbose --ignore-platform-reqs --optimize-autoloader --no-ansi --no-interaction --no-progress
     - php bin/console cache:clear --env=prod
 containerize:
