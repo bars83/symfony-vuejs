@@ -1,4 +1,5 @@
 stages:
+  - base
   - artifacts
   - containerize
 #assets:
@@ -17,7 +18,7 @@ stages:
 #    - yarn install --network-timeout 100000
 #    - yarn build
 build-php-base:
-  stage: artifacts
+  stage: base
   image: docker:git
   services:
       - name: docker:18.09.7-dind
@@ -49,6 +50,7 @@ vendors:
       - var
     expire_in: 1 hour
   script:
+    - ls -la
     - composer install --verbose --ignore-platform-reqs --optimize-autoloader --no-ansi --no-interaction --no-progress
     - php bin/console cache:clear --env=prod
 containerize:
