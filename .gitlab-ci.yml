@@ -1,6 +1,6 @@
 stages:
   - artifacts
-#  - containerize
+  - containerize
 #assets:
 #  stage: artifacts
 #  image:
