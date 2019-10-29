@@ -43,9 +43,9 @@ vendors:
   variables:
     DOCKER_DRIVER: overlay
   before_script:
-    - mkdir -p $(pwd)/.composer-cache
+    - mkdir .composer-cache
     - ls -la
-    - composer config -g cache-dir "$(pwd)/.composer-cache"
+    - composer config -g cache-dir ".composer-cache"
   cache:
     key: "${CI_COMMIT_REF_SLUG}-vendor"
     paths:
