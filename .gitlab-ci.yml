@@ -64,16 +64,16 @@ vendors:
     - composer install --verbose --ignore-platform-reqs --optimize-autoloader --no-ansi --no-interaction --no-progress
     - php bin/console cache:clear --env=prod
 containerize:
-  image: docker:latest
+  image: docker:git
   services:
     - name: docker:18.09.7-dind
       command: ["--mtu=1300"]
   stage: containerize
   script:
+    - setup_docker
     - echo "Logging to GitLab Container Registry with CI credentials..."
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE/php:$CI_COMMIT_REF_SLUG --build-arg BUILD_TIME="$(date "+%Y-%m-%d %H:%M:%S")" --build-arg CI_REGISTRY_IMAGE=$CI_REGISTRY_IMAGE --build-arg CI_COMMIT_REF_SLUG=$CI_COMMIT_REF_SLUG -f ./docker/php/Dockerfile .
-    - docker push $CI_REGISTRY_IMAGE/php-base:$CI_COMMIT_REF_SLUG
     - rm -rf ./vendor
     - rm -rf ./node_modules
     - docker push $CI_REGISTRY_IMAGE/php:$CI_COMMIT_REF_SLUG
