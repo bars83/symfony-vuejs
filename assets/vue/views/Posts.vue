@@ -31,6 +31,11 @@
       </form>
     </div>
 
+
+    <div class="row col">
+      <p>XHR PHP container: {{ backend_host }}, XHR WEB container: {{ web_host }}</p>
+    </div>
+
     <div
       v-if="isLoading"
       class="row col"
@@ -93,6 +98,12 @@ export default {
     },
     posts() {
       return this.$store.getters["post/posts"];
+    },
+    backend_host() {
+      return this.$store.getters["post/backend_host"];
+    },
+    web_host() {
+      return this.$store.getters["post/web_host"];
     },
     canCreatePost() {
       return this.$store.getters["security/hasRole"]("ROLE_FOO");

@@ -64,7 +64,12 @@ final class PostController extends AbstractController
     {
         $logger->info('Call to post controller create findAll action');
         $posts = $this->em->getRepository(Post::class)->findBy([], ['id' => 'DESC']);
-        $data = $this->serializer->serialize($posts, JsonEncoder::FORMAT);
+        $result = [
+            'posts' => $posts,
+            'backend_host' => $_SERVER['HOSTNAME'],
+            'web_host' => $_SERVER['web_hostname']
+        ];
+        $data = $this->serializer->serialize($result, JsonEncoder::FORMAT);
 
         return new JsonResponse($data, Response::HTTP_OK, [], true);
     }

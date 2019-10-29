@@ -12,7 +12,9 @@ export default {
   state: {
     isLoading: false,
     error: null,
-    posts: []
+    posts: [],
+    backend_host: '',
+    web_host: ''
   },
   getters: {
     isLoading(state) {
@@ -29,6 +31,12 @@ export default {
     },
     posts(state) {
       return state.posts;
+    },
+    backend_host(state) {
+      return state.backend_host;
+    },
+    web_host(state) {
+      return state.web_host;
     }
   },
   mutations: {
@@ -51,10 +59,12 @@ export default {
       state.error = null;
       state.posts = [];
     },
-    [FETCHING_POSTS_SUCCESS](state, posts) {
+    [FETCHING_POSTS_SUCCESS](state, data) {
       state.isLoading = false;
       state.error = null;
-      state.posts = posts;
+      state.posts = data.posts;
+      state.backend_host = data.backend_host;
+      state.web_host = data.web_host;
     },
     [FETCHING_POSTS_ERROR](state, error) {
       state.isLoading = false;
@@ -79,7 +89,7 @@ export default {
       try {
         let response = await PostAPI.findAll();
         commit(FETCHING_POSTS_SUCCESS, response.data);
-        return response.data;
+        return response.data.posts;
       } catch (error) {
         commit(FETCHING_POSTS_ERROR, error);
         return null;
