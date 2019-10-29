@@ -36,6 +36,7 @@ vendors:
     - name: docker:18.09.7-dind
       command: ["--mtu=1300"]
   before_script:
+    - mkdir -p $(pwd)/.composer-cache
     - composer config -g cache-dir "$(pwd)/.composer-cache"
   cache:
     key: "${CI_COMMIT_REF_SLUG}-vendor"
