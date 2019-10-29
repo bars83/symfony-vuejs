@@ -78,7 +78,7 @@ containerize:
     - rm -rf ./node_modules
     - docker build -t $CI_REGISTRY_IMAGE/web:$CI_COMMIT_REF_SLUG --build-arg CI_COMMIT_REF_SLUG=$CI_COMMIT_REF_SLUG -f ./docker/nginx/Dockerfile .
     - docker push $CI_REGISTRY_IMAGE/php:$CI_COMMIT_REF_SLUG
-    - docker push $CI_REGISTRY_IMAGE/nginx:$CI_COMMIT_REF_SLUG
+    - docker push $CI_REGISTRY_IMAGE/web:$CI_COMMIT_REF_SLUG
 
 .auto_devops: &auto_devops |
   [[ "$TRACE" ]] && set -x
