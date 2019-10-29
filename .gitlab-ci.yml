@@ -68,6 +68,8 @@ containerize:
   services:
     - name: docker:18.09.7-dind
       command: ["--mtu=1300"]
+  variables:
+    DOCKER_DRIVER: overlay
   stage: containerize
   script:
     - setup_docker
@@ -76,7 +78,9 @@ containerize:
     - docker build -t $CI_REGISTRY_IMAGE/php:$CI_COMMIT_REF_SLUG --build-arg BUILD_TIME="$(date "+%Y-%m-%d %H:%M:%S")" --build-arg CI_REGISTRY_IMAGE=$CI_REGISTRY_IMAGE --build-arg CI_COMMIT_REF_SLUG=$CI_COMMIT_REF_SLUG -f ./docker/php/Dockerfile .
     - rm -rf ./vendor
     - rm -rf ./node_modules
+    - docker build -t $CI_REGISTRY_IMAGE/web:$CI_COMMIT_REF_SLUG --build-arg CI_COMMIT_REF_SLUG=$CI_COMMIT_REF_SLUG -f ./docker/nginx/Dockerfile .
     - docker push $CI_REGISTRY_IMAGE/php:$CI_COMMIT_REF_SLUG
+    - docker push $CI_REGISTRY_IMAGE/nginx:$CI_COMMIT_REF_SLUG
 
 .auto_devops: &auto_devops |
   [[ "$TRACE" ]] && set -x
