@@ -37,11 +37,14 @@ stages:
 vendors:
   stage: artifacts
   image: $CI_REGISTRY_IMAGE/php-base:$CI_COMMIT_REF_SLUG
-  services:
-    - name: docker:18.09.7-dind
-      command: ["--mtu=1300"]
+#  services:
+#    - name: docker:18.09.7-dind
+#      command: ["--mtu=1300"]
   variables:
     DOCKER_DRIVER: overlay
+    APP_ENV: "prod"
+    APP_SECRET: "8d2a5c935d8ef1c0e2b751147382bc75"
+    DATABASE_URL: 'pgsql://test:test@db:5432/test'
   before_script:
     - mkdir -p $(pwd)/.composer-cache
     - ls -la /var/www/
