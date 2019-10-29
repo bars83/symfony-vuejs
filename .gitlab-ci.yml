@@ -29,46 +29,41 @@ build-php-base:
     - docker build -t $CI_REGISTRY_IMAGE/php-base:$CI_COMMIT_REF_SLUG --build-arg BUILD_TIME="$(date "+%Y-%m-%d %H:%M:%S")" ./docker/php-base
     - docker push $CI_REGISTRY_IMAGE/php-base:$CI_COMMIT_REF_SLUG
 
-#vendors:
-#  stage: artifacts
-#  image: $CI_REGISTRY_IMAGE/php-base
-#  before_script:
-#    - composer config -g cache-dir "$(pwd)/.composer-cache"
-#  cache:
-#    key: "${CI_COMMIT_REF_SLUG}-vendor"
-#    paths:
-#      - vendor/
-#      - .composer-cache/
-#  artifacts:
-#    paths:
-#      - vendor
-#      - web/bundles
-#      - .env
-#      - var/bootstrap.php.cache
-#      - var/cache/
-#    expire_in: 1 hour
-#  script:
-#    - cp $PARAMETERS ./app/config/parameters.yml
-#    - cp $DOTENV ./.env
-#    - composer install --verbose --ignore-platform-reqs --optimize-autoloader --no-ansi --no-interaction --no-progress
-#    - php bin/console assets:install
-#    - php bin/console cache:clear --env=prod
-#  only:
-#    - dev
-#containerize:
-#  image: docker:latest
-#  stage: containerize
-#  script:
-#    - cp $PARAMETERS ./app/config/parameters.yml
-#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-#    - docker build -t $CI_REGISTRY_IMAGE/php:$CI_COMMIT_REF_SLUG --build-arg BUILD_TIME="$(date "+%Y-%m-%d %H:%M:%S")" --build-arg CI_REGISTRY_IMAGE=$CI_REGISTRY_IMAGE -f ./docker/php/Dockerfile .
-#    - docker build -t $CI_REGISTRY_IMAGE/php-cron:$CI_COMMIT_REF_SLUG --build-arg CI_REGISTRY_IMAGE=$CI_REGISTRY_IMAGE  --build-arg CI_COMMIT_REF_SLUG=$CI_COMMIT_REF_SLUG ./docker/php/cron
-#    - rm -rf ./vendor
-#    - rm -rf ./node_modules
-#    - docker build -t $CI_REGISTRY_IMAGE/nginx:$CI_COMMIT_REF_SLUG -f ./docker/nginx/Dockerfile .
-#    - docker push $CI_REGISTRY_IMAGE/nginx:$CI_COMMIT_REF_SLUG
-#    - docker push $CI_REGISTRY_IMAGE/php:$CI_COMMIT_REF_SLUG
-#    - docker push $CI_REGISTRY_IMAGE/php-cron:$CI_COMMIT_REF_SLUG
+vendors:
+  stage: artifacts
+  image: $CI_REGISTRY_IMAGE/php-base:$CI_COMMIT_REF_SLUG
+  services:
+    - name: docker:18.09.7-dind
+      command: ["--mtu=1300"]
+  before_script:
+    - composer config -g cache-dir "$(pwd)/.composer-cache"
+  cache:
+    key: "${CI_COMMIT_REF_SLUG}-vendor"
+    paths:
+      - vendor/
+      - .composer-cache/
+  artifacts:
+    paths:
+      - vendor
+      - var
+    expire_in: 1 hour
+  script:
+    - composer install --verbose --ignore-platform-reqs --optimize-autoloader --no-ansi --no-interaction --no-progress
+    - php bin/console cache:clear --env=prod
+containerize:
+  image: docker:latest
+  services:
+    - name: docker:18.09.7-dind
+      command: ["--mtu=1300"]
+  stage: containerize
+  script:
+    - echo "Logging to GitLab Container Registry with CI credentials..."
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE/php:$CI_COMMIT_REF_SLUG --build-arg BUILD_TIME="$(date "+%Y-%m-%d %H:%M:%S")" --build-arg CI_REGISTRY_IMAGE=$CI_REGISTRY_IMAGE --build-arg CI_COMMIT_REF_SLUG=$CI_COMMIT_REF_SLUG -f ./docker/php/Dockerfile .
+    - docker push $CI_REGISTRY_IMAGE/php-base:$CI_COMMIT_REF_SLUG
+    - rm -rf ./vendor
+    - rm -rf ./node_modules
+    - docker push $CI_REGISTRY_IMAGE/php:$CI_COMMIT_REF_SLUG
 
 .auto_devops: &auto_devops |
   [[ "$TRACE" ]] && set -x
