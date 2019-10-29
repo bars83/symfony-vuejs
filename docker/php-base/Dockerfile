@@ -41,6 +41,8 @@ ENV BUILD_TIME_ENV=$BUILD_TIME
 
 #RUN pecl install xdebug-2.7.0 && docker-php-ext-enable xdebug
 
+RUN mkdir -p /var/www/.composer && chown -R www-data:www-data /var/www/.composer
+
 HEALTHCHECK --interval=10s --timeout=3s \
     CMD \
     SCRIPT_NAME=/ping \

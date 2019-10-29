@@ -1,5 +1,5 @@
 stages:
-#  - base
+  - base
   - artifacts
   - containerize
 #assets:
@@ -19,20 +19,20 @@ stages:
 #    - yarn build
 
 
-#build-php-base:
-#  stage: base
-#  image: docker:git
-#  services:
-#    - name: docker:18.09.7-dind
-#      command: ["--mtu=1300"]
-#  variables:
-#    DOCKER_DRIVER: overlay
-#  script:
-#    - setup_docker
-#    - echo "Logging to GitLab Container Registry with CI credentials..."
-#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-#    - docker build -t $CI_REGISTRY_IMAGE/php-base:$CI_COMMIT_REF_SLUG --build-arg BUILD_TIME="$(date "+%Y-%m-%d %H:%M:%S")" ./docker/php-base
-#    - docker push $CI_REGISTRY_IMAGE/php-base:$CI_COMMIT_REF_SLUG
+build-php-base:
+  stage: base
+  image: docker:git
+  services:
+    - name: docker:18.09.7-dind
+      command: ["--mtu=1300"]
+  variables:
+    DOCKER_DRIVER: overlay
+  script:
+    - setup_docker
+    - echo "Logging to GitLab Container Registry with CI credentials..."
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE/php-base:$CI_COMMIT_REF_SLUG --build-arg BUILD_TIME="$(date "+%Y-%m-%d %H:%M:%S")" ./docker/php-base
+    - docker push $CI_REGISTRY_IMAGE/php-base:$CI_COMMIT_REF_SLUG
 
 vendors:
   stage: artifacts
@@ -43,9 +43,9 @@ vendors:
   variables:
     DOCKER_DRIVER: overlay
   before_script:
-    - mkdir .composer-cache
+    - mkdir -p $(pwd)/.composer-cache
     - ls -la
-    - composer config -g cache-dir ".composer-cache"
+    - composer config -g cache-dir "$(pwd)/.composer-cache"
   cache:
     key: "${CI_COMMIT_REF_SLUG}-vendor"
     paths:
