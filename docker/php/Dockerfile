@@ -14,6 +14,7 @@ COPY --chown=www-data:www-data ./composer.json /var/www/html/composer.json
 COPY --chown=www-data:www-data ./composer.lock /var/www/html/composer.lock
 COPY --chown=www-data:www-data ./symfony.lock /var/www/html/symfony.lock
 COPY --chown=www-data:www-data ./public/index.php /var/www/html/public/index.php
+COPY --chown=www-data:www-data ./public/build/entrypoints.json /var/www/html/public/build/entrypoints.json
 
 ARG BUILD_TIME
 

@@ -1,0 +1,102 @@
+# First, create a ConfigMap whose contents are used
+# as the nginx.conf file in the web server.
+# This server uses /var/www/html as its
+# root document directory. When the server gets a
+# request for *.php, it will forward that request
+# to our PHP-FPM container.
+
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: nginx-config
+data:
+  site.conf: |
+      # Общие настройки кэширования.
+
+      # Создаем кеш зону firstpage (память под ключи в 5Мб) с настройками:
+      # inactive: xранить кеш 10 минут
+      # max_size: максимальный размер кеш данные 1500Мб
+      fastcgi_cache_path /var/cache/nginx/{{ .Values.web.endpointName }} levels=2 keys_zone=firstpage:5m inactive=10m max_size=1500m;
+      # Указывает в каких случаях клиенту можно отдать несвежий ответ из кеша
+      fastcgi_cache_use_stale error timeout invalid_header http_500 http_503;
+
+      server {
+          server_name {{ .Values.web.endpointName }};
+          listen 80;
+          client_max_body_size    500m;
+          client_body_buffer_size 128k;
+          client_header_buffer_size 128k;
+          large_client_header_buffers 4 32k;
+
+          fastcgi_cache_key php:9000$request_uri;
+          fastcgi_read_timeout 90s;
+
+          root /var/www/html/public;
+
+          access_log /var/log/nginx/access.log;
+          error_log /var/log/nginx/error.log;
+
+          location ~* ^\/.+\.(jpg|jpeg|gif|png|ico|css|zip|tgz|gz|rar|bz2|pdf|txt|tar|wav|bmp|rtf|js|flv|swf|html|htm|woff|woff2|ttf|eot|svg)$ {
+                  try_files $uri $uri/ =404;
+                  expires 8d;
+              }
+
+          location / {
+              try_files $uri /{{ .Values.web.scriptName }}.php$is_args$args;
+          }
+
+      # в локации админки кэш не нужен
+          location ~ ^/(admin|zabbix|_wdt|ckfinder) {
+                  if_modified_since off;
+                  add_header Last-Modified "";
+
+                  # активировать зону кеширования def_cache
+                  fastcgi_cache firstpage;
+                  # но кэш тут валииден 0 секунд
+                  fastcgi_cache_valid any 0;
+                  fastcgi_no_cache 1;
+                  fastcgi_cache_bypass 1;
+                  expires epoch;
+                  fastcgi_pass php:9000;
+                  include fastcgi_params;
+                  fastcgi_param web_hostname $hostname;
+                  fastcgi_param SCRIPT_NAME /{{ .Values.web.scriptName }}.php;
+                  fastcgi_param SCRIPT_FILENAME $document_root/{{ .Values.web.scriptName }}.php;
+              }
+
+          location ~ ^/{{ .Values.web.scriptName }}\.php(/|$) {
+                  #expires 5s;
+                  #fastcgi_cache firstpage;
+                  #fastcgi_cache_revalidate on;
+                  #fastcgi_ignore_headers Expires Cache-Control Set-Cookie;
+                  #fastcgi_cache_valid 200 301 302 304 5s;
+                  #fastcgi_cache_valid 404 5s;
+                  #fastcgi_cache_lock on;
+                  #fastcgi_cache_lock_age 10s;
+                  #fastcgi_cache_lock_timeout 10s;
+                  #fastcgi_cache_use_stale updating;
+
+
+                  if_modified_since off;
+                  add_header Last-Modified "";
+                  fastcgi_cache firstpage;
+                  fastcgi_cache_valid any 0;
+                  fastcgi_no_cache 1;
+                  fastcgi_cache_bypass 1;
+                  expires epoch;
+
+                  include fastcgi_params;
+                  fastcgi_pass php:9000;
+                  fastcgi_split_path_info ^(.+\.php)(/.*)$;
+                  fastcgi_param web_hostname $hostname;
+                  fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+                  fastcgi_param DOCUMENT_ROOT $realpath_root;
+                  internal;
+          }
+
+           location ~ \.php$ {
+                  return 404;
+          }
+
+
+      }

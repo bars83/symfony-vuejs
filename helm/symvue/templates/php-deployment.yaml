@@ -1,0 +1,48 @@
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-php
+  labels:
+    app: {{ template "fullname" . }}-php
+    component: web
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.web.replicaCount }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}-php
+      component: php
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      name: {{ template "fullname" . }}-php
+      labels:
+        app: {{ template "fullname" . }}-php
+        component: php
+        release: {{ .Release.Name }}
+    spec:
+      imagePullSecrets:
+      - name: {{ .Values.image.secret }}
+      containers:
+      - name: {{ .Chart.Name }}-php
+        image: "{{ .Values.php.repository }}:{{ .Values.php.tag }}"
+        env:
+        - name: APP_ENV
+          value: php
+        - name: APP_SECRET
+          value: 8d2a5c935d8ef1c0e2b751147382bc75
+        - name: PSQL_HOST
+          value: {{ template "fullname" . }}-psql-cluster
+        - name: PSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: user.{{ template "fullname" . }}-psql-cluster.credentials
+              key: password
+        - name: DATABASE_URL
+          value: "pgsql://user:$(PSQL_PASSWORD)@$(PSQL_HOST):5432/main"
+        ports:
+          - containerPort: 9000
+        resources:

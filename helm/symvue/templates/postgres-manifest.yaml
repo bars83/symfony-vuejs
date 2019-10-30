@@ -1,0 +1,22 @@
+apiVersion: "acid.zalan.do/v1"
+kind: postgresql
+metadata:
+  name: {{ template "fullname" . }}-psql-cluster
+spec:
+  teamId: {{ template "fullname" . }}
+  volume:
+    size: 1Gi
+  numberOfInstances: 2
+  users:
+    admin:  # database owner
+    - superuser
+    - createdb
+    user: []  # role for application foo
+  databases:
+    main: user  # dbname: owner
+  postgresql:
+    version: "11"
+  patroni:
+    pg_hba:
+    - hostssl all all 0.0.0.0/0 md5
+    - host    all all 0.0.0.0/0 md5
