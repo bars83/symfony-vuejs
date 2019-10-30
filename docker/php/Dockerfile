@@ -32,10 +32,3 @@ RUN echo $BUILD_TIME_ENV && echo $IS_CI
 USER www-data
 
 CMD php bin/console doctrine:migrations:migrate && php-fpm
-
-cat > public/build/manifest.json <<EOF
-{
-  "build/0.eb225194.js": "/build/0.eb225194.js",
-  "build/app.js": "/build/app.595c0e8c.js"
-}
-EOF
