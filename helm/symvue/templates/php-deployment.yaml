@@ -5,12 +5,15 @@ metadata:
   name: {{ template "fullname" . }}-php
   labels:
     app: {{ template "fullname" . }}-php
-    component: web
+    component: php
     release: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.web.replicaCount }}
   strategy:
-    type: Recreate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
   selector:
     matchLabels:
       app: {{ template "fullname" . }}-php

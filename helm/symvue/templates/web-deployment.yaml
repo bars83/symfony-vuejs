@@ -10,7 +10,10 @@ metadata:
 spec:
   replicas: {{ .Values.web.replicaCount }}
   strategy:
-    type: Recreate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
   selector:
     matchLabels:
       app: {{ template "fullname" . }}-web
