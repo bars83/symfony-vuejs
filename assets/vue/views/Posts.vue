@@ -33,7 +33,7 @@
 
 
     <div class="row col">
-      <p>XHR PHP container: {{ backend_host }}, XHR WEB container: {{ web_host }}</p>
+      <p>XHR PHP container: {{ backend_host }} (build time: {{ backend_build_time }}), XHR WEB container: {{ web_host }}</p>
     </div>
 
     <div
@@ -101,6 +101,9 @@ export default {
     },
     backend_host() {
       return this.$store.getters["post/backend_host"];
+    },
+    backend_build_time() {
+      return this.$store.getters["post/backend_build_time"];
     },
     web_host() {
       return this.$store.getters["post/web_host"];

@@ -67,7 +67,8 @@ final class PostController extends AbstractController
         $result = [
             'posts' => $posts,
             'backend_host' => $_SERVER['HOSTNAME'],
-            'web_host' => $_SERVER['web_hostname']
+            'web_host' => $_SERVER['web_hostname'],
+            'backend_build_time' => $_SERVER['BUILD_TIME_ENV']
         ];
         $data = $this->serializer->serialize($result, JsonEncoder::FORMAT);
 

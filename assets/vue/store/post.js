@@ -14,6 +14,7 @@ export default {
     error: null,
     posts: [],
     backend_host: '',
+    backend_build_time: '',
     web_host: ''
   },
   getters: {
@@ -34,6 +35,9 @@ export default {
     },
     backend_host(state) {
       return state.backend_host;
+    },
+    backend_build_time(state) {
+      return state.backend_build_time;
     },
     web_host(state) {
       return state.web_host;
@@ -64,6 +68,7 @@ export default {
       state.error = null;
       state.posts = data.posts;
       state.backend_host = data.backend_host;
+      state.backend_build_time=data.backend_build_time;
       state.web_host = data.web_host;
     },
     [FETCHING_POSTS_ERROR](state, error) {
