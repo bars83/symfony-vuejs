@@ -15,6 +15,7 @@ COPY --chown=www-data:www-data ./composer.lock /var/www/html/composer.lock
 COPY --chown=www-data:www-data ./symfony.lock /var/www/html/symfony.lock
 COPY --chown=www-data:www-data ./public/index.php /var/www/html/public/index.php
 COPY --chown=www-data:www-data ./public/build/entrypoints.json /var/www/html/public/build/entrypoints.json
+COPY --chown=www-data:www-data ./public/build/manifest.json /var/www/html/public/build/manifest.json
 
 ARG BUILD_TIME
 
@@ -31,3 +32,10 @@ RUN echo $BUILD_TIME_ENV && echo $IS_CI
 USER www-data
 
 CMD php bin/console doctrine:migrations:migrate && php-fpm
+
+cat > public/build/manifest.json <<EOF
+{
+  "build/0.eb225194.js": "/build/0.eb225194.js",
+  "build/app.js": "/build/app.595c0e8c.js"
+}
+EOF

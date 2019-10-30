@@ -29,6 +29,17 @@ spec:
       containers:
       - name: {{ .Chart.Name }}-php
         image: "{{ .Values.php.repository }}:{{ .Values.php.tag }}"
+        imagePullPolicy: Always
+        livenessProbe:
+          tcpSocket:
+            port: 9000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command: ['sh', '-c', 'SCRIPT_NAME=/ping SCRIPT_FILENAME=/ping REQUEST_METHOD=GET cgi-fcgi -bind -connect 127.0.0.1:9000 || exit 1']
+          initialDelaySeconds: 5
+          periodSeconds: 10
         env:
         - name: APP_ENV
           value: php

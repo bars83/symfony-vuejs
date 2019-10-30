@@ -43,12 +43,12 @@ ENV BUILD_TIME_ENV=$BUILD_TIME
 
 RUN mkdir -p /var/www/.composer && chown -R www-data:www-data /var/www/.composer
 
-HEALTHCHECK --interval=10s --timeout=3s \
-    CMD \
-    SCRIPT_NAME=/ping \
-    SCRIPT_FILENAME=/ping \
-    REQUEST_METHOD=GET \
-    cgi-fcgi -bind -connect 127.0.0.1:9000 || exit 1
+#HEALTHCHECK --interval=10s --timeout=3s \
+#    CMD \
+#    SCRIPT_NAME=/ping \
+#    SCRIPT_FILENAME=/ping \
+#    REQUEST_METHOD=GET \
+#    cgi-fcgi -bind -connect 127.0.0.1:9000 || exit 1
 
 USER www-data
 
