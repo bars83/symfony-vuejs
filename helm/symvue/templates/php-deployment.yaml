@@ -31,7 +31,7 @@ spec:
       - name: {{ .Values.image.secret }}
       containers:
       - name: {{ .Chart.Name }}-php
-        image: "{{ .Values.php.repository }}:{{ .Values.php.tag }}"
+        image: "{{ .Values.php.image }}:{{ .Values.php.tag }}"
         imagePullPolicy: Always
         livenessProbe:
           tcpSocket:

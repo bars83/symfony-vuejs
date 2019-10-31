@@ -10,7 +10,7 @@ metadata:
     cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuer }}
 spec:
   rules:
-  - host: symvue-test.kubeplay.website
+  - host: {{ .Values.ingress.host }}
     http:
       paths:
       - path: /
@@ -19,5 +19,5 @@ spec:
           servicePort: 80
   tls:
     - hosts:
-        - symvue-test.kubeplay.website
+        - {{ .Values.ingress.host }}
       secretName: {{ template "fullname" . }}-ingress-letsencrypt-prod

@@ -12,13 +12,13 @@ ingress:
   host: ""
 
 web:
-  repository: registry.kubeplay.website/demo/symvue/web
+  image: registry.kubeplay.website/demo/symvue/web
   tag: master
   replicaCount: 2
   scriptName: index
   endpointName: web
 
 php:
-  repository: registry.kubeplay.website/demo/symvue/php
+  image: registry.kubeplay.website/demo/symvue/php
   tag: master
   replicaCount: 3
