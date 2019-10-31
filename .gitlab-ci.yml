@@ -84,6 +84,8 @@ containerize:
 #  variables:
 #    DOCKER_DRIVER: overlay
   stage: containerize
+  only:
+    - never
   script:
 #    - setup_docker
 #    - docker info
@@ -106,6 +108,7 @@ test:
 
 review:
   stage: review
+  image: docker:latest
   variables:
     KUBE_NAMESPACE: review
     INGRESS_HOST: $CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG.$KUBE_INGRESS_BASE_DOMAIN
