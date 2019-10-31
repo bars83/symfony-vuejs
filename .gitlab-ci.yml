@@ -244,6 +244,7 @@ stop_review:
         --set web.tag="$CI_COMMIT_REF_SLUG" \
         --set php.image="$CI_REGISTRY_IMAGE/php" \
         --set php.tag="$CI_COMMIT_REF_SLUG" \
+        --namespace="$KUBE_NAMESPACE" \
         "$name" \
         ./helm/symvue
 
