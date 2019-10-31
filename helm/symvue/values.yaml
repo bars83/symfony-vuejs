@@ -1,0 +1,24 @@
+image:
+  tag: latest
+  name: test
+  secret: gitlab-registry-root
+  pullPolicy:
+
+ingress:
+  class: nginx
+  sslRedirect: "true"
+  tlsAcme: "true"
+  clusterIssuer: letsencrypt-prod
+  host: ""
+
+web:
+  image: registry.kubeplay.website/demo/symvue/web
+  tag: master
+  replicaCount: 2
+  scriptName: index
+  endpointName: web
+
+php:
+  image: registry.kubeplay.website/demo/symvue/php
+  tag: master
+  replicaCount: 3

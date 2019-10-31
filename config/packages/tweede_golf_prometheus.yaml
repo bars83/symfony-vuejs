@@ -1,0 +1,13 @@
+tweede_golf_prometheus:
+    storage_adapter_service: TweedeGolf\PrometheusClient\Storage\ApcuAdapter
+    collectors:
+        http_requests_total:
+            counter:
+                labels: [handler]
+                help: Total number of requests
+        users_registered:
+            gauge:
+                help: Number of registered users
+        post_count:
+            gauge:
+                help: Post count

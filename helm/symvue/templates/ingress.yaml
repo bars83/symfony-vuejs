@@ -1,0 +1,23 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "fullname" . }}
+  annotations:
+    kubernetes.io/ingress.class: "{{ .Values.ingress.class }}"
+    ingress.kubernetes.io/ssl-redirect: "{{ .Values.ingress.sslRedirect }}"
+    kubernetes.io/tls-acme: "{{ .Values.ingress.tlsAcme }}"
+    cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuer }}
+spec:
+  rules:
+  - host: {{ .Values.ingress.host }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "fullname" . }}
+          servicePort: 80
+  tls:
+    - hosts:
+        - {{ .Values.ingress.host }}
+      secretName: {{ template "fullname" . }}-ingress-letsencrypt-prod

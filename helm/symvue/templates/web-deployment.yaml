@@ -1,0 +1,62 @@
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-web
+  labels:
+    app: {{ template "fullname" . }}-web
+    component: web
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.web.replicaCount }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}-web
+      component: web
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      name: {{ template "fullname" . }}-web
+      labels:
+        app: {{ template "fullname" . }}-web
+        component: web
+        release: {{ .Release.Name }}
+    spec:
+      imagePullSecrets:
+      - name: {{ .Values.image.secret }}
+      containers:
+      - name: {{ .Chart.Name }}-web
+        image: "{{ .Values.web.image }}:{{ .Values.web.tag }}"
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 80
+        volumeMounts:
+        - name: nginx-config-volume
+          mountPath: /etc/nginx/conf.d/
+        resources:
+        readinessProbe:
+          httpGet:
+            path: /nginx-health
+            port: 80
+          initialDelaySeconds: 15
+          timeoutSeconds: 1
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /nginx-health
+            port: 80
+          initialDelaySeconds: 15
+          timeoutSeconds: 1
+          periodSeconds: 10
+      volumes:
+      - name: nginx-config-volume
+        configMap:
+          name: nginx-config
+          items:
+            - key: site.conf
+              path: site.conf
