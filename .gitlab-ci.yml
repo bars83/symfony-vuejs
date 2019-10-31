@@ -31,7 +31,7 @@ assets:
 
 build-php-base:
   stage: base
-  image: docker:git
+  image: docker:18.09.7-dind
   services:
     - name: docker:18.09.7-dind
       command: ["--mtu=1300"]
