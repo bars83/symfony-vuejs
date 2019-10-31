@@ -31,10 +31,10 @@ assets:
 
 build-php-base:
   stage: base
-  image: docker:18.09.7-dind
-  services:
-    - name: docker:18.09.7-dind
-      command: ["--mtu=1300"]
+  image: docker:latest
+#  services:
+#    - name: docker:18.09.7-dind
+#      command: ["--mtu=1300"]
   script:
 #    - setup_docker
     - docker info
