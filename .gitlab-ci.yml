@@ -108,12 +108,9 @@ test:
 
 review:
   stage: review
-  image: docker:latest
   variables:
     KUBE_NAMESPACE: review
     INGRESS_HOST: $CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG.$KUBE_INGRESS_BASE_DOMAIN
-    TILLER_NAMESPACE: kube-system
-    CI_APPLICATION_TAG: $CI_COMMIT_REF_SLUG
     name: $CI_ENVIRONMENT_SLUG
   environment:
     name: review/$CI_PROJECT_PATH/$CI_COMMIT_REF_NAME
@@ -132,45 +129,47 @@ review:
     - create_secret
     - deploy
 
-#
-#staging:
-#  stage: staging
-#  script:
-#    - install_dependencies
-#    - ensure_namespace
-#    - install_tiller
-#    - create_secret
-#    - deploy
-#  variables:
-#    KUBE_NAMESPACE: staging
-#    INGRESS_HOST: $CI_PROJECT_PATH_SLUG-staging.$KUBE_INGRESS_BASE_DOMAIN
-#  environment:
-#    name: staging
-#    url: https://$CI_PROJECT_PATH_SLUG-staging.$KUBE_INGRESS_BASE_DOMAIN
-#  only:
-#    refs:
-#      - master
-#    kubernetes: active
-#
-#production:
-#  stage: production
-#  script:
-#    - install_dependencies
-#    - ensure_namespace
-#    - install_tiller
-#    - create_secret
-#    - deploy
-#  variables:
-#    KUBE_NAMESPACE: production
-#    INGRESS_HOST: $CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
-#  environment:
-#    name: production
-#    url: https://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
-#  when: manual
-#  only:
-#    refs:
-#      - master
-#    kubernetes: active
+
+staging:
+  stage: staging
+  script:
+    - install_dependencies
+    - ensure_namespace
+    - install_tiller
+    - create_secret
+    - deploy
+  variables:
+    KUBE_NAMESPACE: symvue-staging
+    INGRESS_HOST: $CI_PROJECT_PATH_SLUG-staging.$KUBE_INGRESS_BASE_DOMAIN
+    name: symvue-staging
+  environment:
+    name: staging
+    url: https://$CI_PROJECT_PATH_SLUG-staging.$KUBE_INGRESS_BASE_DOMAIN
+  only:
+    refs:
+      - master
+    kubernetes: active
+
+production:
+  stage: production
+  script:
+    - install_dependencies
+    - ensure_namespace
+    - install_tiller
+    - create_secret
+    - deploy
+  variables:
+    KUBE_NAMESPACE: symvue-production
+    INGRESS_HOST: $CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+    name: symvue-production
+  environment:
+    name: production
+    url: https://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+  when: manual
+  only:
+    refs:
+      - master
+    kubernetes: active
 
 stop_review:
   stage: cleanup
