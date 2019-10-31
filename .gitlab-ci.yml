@@ -1,3 +1,13 @@
+---
+image: docker:latest
+
+services:
+  - docker:dind
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_HOST: tcp://localhost:2375
+
 stages:
   - base
   - artifacts
@@ -30,6 +40,7 @@ build-php-base:
   script:
     - setup_docker
     - docker info
+    - docker images
     - echo "Logging to GitLab Container Registry with CI credentials..."
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE/php-base:$CI_COMMIT_REF_SLUG --build-arg BUILD_TIME="$(date "+%Y-%m-%d %H:%M:%S")" ./docker/php-base
@@ -73,6 +84,7 @@ containerize:
   script:
     - setup_docker
     - docker info
+    - docker images
     - echo "Logging to GitLab Container Registry with CI credentials..."
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE/php:$CI_COMMIT_REF_SLUG --build-arg BUILD_TIME="$(date "+%Y-%m-%d %H:%M:%S")" --build-arg CI_REGISTRY_IMAGE=$CI_REGISTRY_IMAGE --build-arg CI_COMMIT_REF_SLUG=$CI_COMMIT_REF_SLUG -f ./docker/php/Dockerfile .
