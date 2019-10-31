@@ -35,10 +35,8 @@ build-php-base:
   services:
     - name: docker:18.09.7-dind
       command: ["--mtu=1300"]
-  variables:
-    DOCKER_DRIVER: overlay
   script:
-    - setup_docker
+#    - setup_docker
     - docker info
     - docker images
     - echo "Logging to GitLab Container Registry with CI credentials..."
