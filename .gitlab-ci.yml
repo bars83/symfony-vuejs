@@ -84,8 +84,8 @@ containerize:
 #  variables:
 #    DOCKER_DRIVER: overlay
   stage: containerize
-  only:
-    - never
+#  only:
+#    - never
   script:
 #    - setup_docker
 #    - docker info
