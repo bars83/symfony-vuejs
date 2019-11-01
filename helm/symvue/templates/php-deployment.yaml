@@ -8,7 +8,7 @@ metadata:
     component: php
     release: {{ .Release.Name }}
 spec:
-  replicas: {{ .Values.web.replicaCount }}
+  replicas: {{ .Values.php.replicaCount }}
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -45,7 +45,7 @@ spec:
           periodSeconds: 10
         env:
         - name: APP_ENV
-          value: php
+          value: {{ .Values.php.env }}
         - name: APP_SECRET
           value: 8d2a5c935d8ef1c0e2b751147382bc75
         - name: PSQL_HOST

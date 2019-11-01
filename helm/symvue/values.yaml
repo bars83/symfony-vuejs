@@ -22,3 +22,4 @@ php:
   image: registry.kubeplay.website/demo/symvue/php
   tag: master
   replicaCount: 3
+  env: prod
